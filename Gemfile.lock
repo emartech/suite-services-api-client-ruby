@@ -3,7 +3,6 @@ PATH
   specs:
     emarsys_suite_services_api_client (0.0.1)
       escher (= 0.3.2)
-      escher (= 0.3.2)
       rest-client (= 1.7.3)
 
 GEM
@@ -37,4 +36,4 @@ PLATFORMS
 
 DEPENDENCIES
   emarsys_suite_services_api_client!
-  rspec
+  rspec (= 3.2.0)

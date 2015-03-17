@@ -39,6 +39,25 @@ module Emarsys
 
 
 
+      def list_integrations(customer)
+        request_data = {
+            method: 'GET',
+            uri: "/api/services/customers/#{customer}/integrations",
+            headers: [['host', @host]],
+        }
+
+        escher.sign!(request_data, client)
+
+        RestClient::Request.execute(
+          method: 'GET',
+          url: "#{@protocol}://#{@host}/api/services/customers/#{customer}/integrations",
+          headers: request_data[:headers],
+          ssl_version: :TLSv1
+        )
+      end
+
+
+
       private
       def escher
         Escher::Auth.new('eu/suite/ems_request', {
