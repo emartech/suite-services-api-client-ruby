@@ -48,12 +48,12 @@ module Emarsys
 
         escher.sign!(request_data, client)
 
-        RestClient::Request.execute(
+        JSON.parse(RestClient::Request.execute(
           method: 'GET',
           url: "#{@protocol}://#{@host}/api/services/customers/#{customer}/integrations",
           headers: request_data[:headers],
           ssl_version: :TLSv1
-        )
+        ))
       end
 
 
