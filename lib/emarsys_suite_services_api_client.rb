@@ -39,7 +39,7 @@ module Emarsys
 
         escher.sign!(request_data, client)
 
-        send_request(method, request_data, uri)
+        send_request(method, request_data, uri)['integrations']
       end
 
 
@@ -51,7 +51,7 @@ module Emarsys
 
         escher.sign!(request_data, client)
 
-        send_request(method, request_data, uri)
+        send_request(method, request_data, uri)['integration']
       end
 
 
