@@ -21,44 +21,72 @@ module Emarsys
 
 
       def authenticated_healthcheck
-        request_data = {
-            method: 'GET',
-            uri: '/api/services/authenticated_healthcheck',
-            headers: [['host', @host]],
-        }
+        method = 'GET'
+        uri = '/api/services/authenticated_healthcheck'
+        request_data = assemble_request(method, uri)
 
         escher.sign!(request_data, client)
 
-        RestClient::Request.execute(
-            method: :get,
-            url: "#{@protocol}://#{@host}/api/services/authenticated_healthcheck",
-            headers: request_data[:headers],
-            ssl_version: :TLSv1
-        )
+        send_request(method, request_data, uri, false)
       end
 
 
 
-      def list_integrations(customer)
-        request_data = {
-            method: 'GET',
-            uri: "/api/services/customers/#{customer}/integrations",
-            headers: [['host', @host]],
-        }
+      def list_integrations(customer_id)
+        method = 'GET'
+        uri = "/api/services/customers/#{customer_id}/integrations"
+        request_data = assemble_request(method, uri)
 
         escher.sign!(request_data, client)
 
-        JSON.parse(RestClient::Request.execute(
-          method: 'GET',
-          url: "#{@protocol}://#{@host}/api/services/customers/#{customer}/integrations",
-          headers: request_data[:headers],
-          ssl_version: :TLSv1
-        ))
+        send_request(method, request_data, uri)
+      end
+
+
+
+      def get_integration(customer_id, integration_id)
+        method = 'GET'
+        uri = "/api/services/customers/#{customer_id}/integrations/#{integration_id}"
+        request_data = assemble_request(method, uri)
+
+        escher.sign!(request_data, client)
+
+        send_request(method, request_data, uri)
       end
 
 
 
       private
+
+      def url(uri)
+        "#{@protocol}://#{@host}#{uri}"
+      end
+
+
+
+      def assemble_request(method, uri)
+        { method: method, uri: uri, headers: [['host', @host]] }
+      end
+
+
+
+      def send_request(method, request_data, uri, return_json = true)
+        response = (RestClient::Request.execute(
+                       method: method,
+                       url: url(uri),
+                       headers: request_data[:headers],
+                       ssl_version: :TLSv1
+                   ))
+
+        if return_json
+          JSON.parse(response)
+        else
+          response
+        end
+      end
+
+
+
       def escher
         Escher::Auth.new('eu/suite/ems_request', {
              algo_prefix: 'EMS',

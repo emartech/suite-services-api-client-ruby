@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'emarsys_suite_services_api_client'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.date        = '2015-03-16'
   s.summary     = 'Client for the services api of the Emarsys Suite'
   s.description = 'Client for the services api of the Emarsys Suite.'
@@ -14,5 +14,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'escher', '0.3.2'
 
   s.add_development_dependency 'rspec', '3.2.0'
+  s.add_development_dependency 'dotenv', '1.0.2'
 
 end
