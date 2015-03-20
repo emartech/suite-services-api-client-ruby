@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    emarsys_suite_services_api_client (0.0.3)
+    emarsys_suite_services_api_client (0.0.4)
       escher (= 0.3.2)
       rest-client (= 1.7.3)
 

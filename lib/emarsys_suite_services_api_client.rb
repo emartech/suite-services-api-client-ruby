@@ -21,37 +21,37 @@ module Emarsys
 
 
       def authenticated_healthcheck
-        method = 'GET'
         uri = '/api/services/authenticated_healthcheck'
-        request_data = assemble_request(method, uri)
+        request = sign_request('GET', uri)
 
-        escher.sign!(request_data, client)
-
-        send_request(method, request_data, uri, false)
+        send_request(request, false)
       end
 
 
 
       def list_integrations(customer_id)
-        method = 'GET'
         uri = "/api/services/customers/#{customer_id}/integrations"
-        request_data = assemble_request(method, uri)
+        request = sign_request('GET', uri)
 
-        escher.sign!(request_data, client)
-
-        send_request(method, request_data, uri)['integrations']
+        send_request(request)['integrations']
       end
 
 
 
       def get_integration(customer_id, integration_id)
-        method = 'GET'
         uri = "/api/services/customers/#{customer_id}/integrations/#{integration_id}"
-        request_data = assemble_request(method, uri)
+        request = sign_request('GET', uri)
 
-        escher.sign!(request_data, client)
+        send_request(request)['integration']
+      end
 
-        send_request(method, request_data, uri)['integration']
+
+
+      def update_integration(customer_id, integration_id, payload)
+        uri = "/api/services/customers/#{customer_id}/integrations/#{integration_id}"
+        request = sign_request('PUT', uri, payload)
+
+        send_request(request)['integration']
       end
 
 
@@ -64,17 +64,27 @@ module Emarsys
 
 
 
-      def assemble_request(method, uri)
-        { method: method, uri: uri, headers: [['host', @host]] }
+      def sign_request(method, uri, payload = nil)
+        request = { method: method, uri: uri, headers: [['host', @host]]}
+        if payload
+          payload = JSON.generate(payload)
+          request[:body] = payload
+        end
+
+        escher.sign!(request, client)
+
+        request
       end
 
 
 
-      def send_request(method, request_data, uri, return_json = true)
+      def send_request(request, return_json = true)
+        puts request.inspect
         response = (RestClient::Request.execute(
-                       method: method,
-                       url: url(uri),
-                       headers: request_data[:headers],
+                       method: request[:method],
+                       url: url(request[:uri]),
+                       headers: request[:headers],
+                       payload: request[:body],
                        ssl_version: :TLSv1
                    ))
 

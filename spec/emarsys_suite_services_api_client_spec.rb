@@ -11,7 +11,7 @@ module Emarsys
       let(:auth) { JSON.parse(ENV['AUTH']) }
       let(:client) { ServicesApiClient.new(auth['key'], auth['secret'], 'suite.ett.local', false) }
       let(:customer_id) { 122666592 }
-      let(:integration_id) { 'sms' }
+      let(:integration_id) { 'powerinbox' }
 
       describe '#healthcheck' do
         it 'should return OK' do
@@ -34,6 +34,16 @@ module Emarsys
       describe '#get_integration' do
         it 'should get the specified integration' do
           expect(client.get_integration(customer_id, integration_id)).to be_instance_of(Hash)
+        end
+      end
+
+      describe '#update_integration' do
+        it 'turns on the specified integration' do
+          expect(client.update_integration(customer_id, integration_id, { is_on: true }))
+        end
+
+        it 'turns off the specified integration' do
+          expect(client.update_integration(customer_id, integration_id, { is_on: false }))
         end
       end
 
